@@ -1,0 +1,43 @@
++ ./vAdd 10000000 32
+Initializing input arrays.
+Running sequential job.
+	Sequential Job Time: 33.82 ms
+Running parallel job.
+	Parallel Job Time: 1.53 ms
+Correct result. No errors were found.
++ echo
+
++ ./vAdd 10000000 64
+Initializing input arrays.
+Running sequential job.
+	Sequential Job Time: 33.76 ms
+Running parallel job.
+	Parallel Job Time: 0.97 ms
+Correct result. No errors were found.
++ echo
+
++ ./vAdd 10000000 128
+Initializing input arrays.
+Running sequential job.
+	Sequential Job Time: 33.73 ms
+Running parallel job.
+	Parallel Job Time: 0.85 ms
+Correct result. No errors were found.
++ echo
+
++ ./vAdd 10000000 256
+Initializing input arrays.
+Running sequential job.
+	Sequential Job Time: 30.39 ms
+Running parallel job.
+	Parallel Job Time: 0.85 ms
+Correct result. No errors were found.
++ echo
+
++ ./vAdd 10000000 512
+Initializing input arrays.
+Running sequential job.
+	Sequential Job Time: 33.70 ms
+Running parallel job.
+	Parallel Job Time: 0.86 ms
+Correct result. No errors were found.
