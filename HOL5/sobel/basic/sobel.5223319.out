@@ -1,0 +1,39 @@
++ ./sobel ../../input/fractal.pgm 100
+Image size: 1600x1600
+CPU execution time: 55.7914 ms
+GPU execution time: 4.66948 ms
+Percentage difference: 0 %
++ ./sobel ../../input/world.pgm 100
+Image size: 2428x2024
+CPU execution time: 83.9223 ms
+GPU execution time: 7.86411 ms
+Percentage difference: 0 %
++ echo NVPROF
+NVPROF
++ nvprof ./sobel ../../input/world.pgm 100
+Image size: 2428x2024
+==48716== NVPROF is profiling process 48716, command: ./sobel ../../input/world.pgm 100
+CPU execution time: 93.489 ms
+GPU execution time: 8.96034 ms
+==48716== Percentage difference: 0 %
+Profiling application: ./sobel ../../input/world.pgm 100
+==48716== Profiling result:
+            Type  Time(%)      Time     Calls       Avg       Min       Max  Name
+ GPU activities:   48.27%  3.7215ms         2  1.8608ms  1.5575ms  2.1640ms  [CUDA memcpy HtoD]
+                   40.90%  3.1533ms         2  1.5767ms  1.3939ms  1.7594ms  [CUDA memcpy DtoH]
+                    9.21%  710.19us         1  710.19us  710.19us  710.19us  kernel(unsigned char*, unsigned char*, unsigned int, unsigned int, int)
+                    1.59%  122.95us         1  122.95us  122.95us  122.95us  warmup(unsigned char*, unsigned char*)
+                    0.03%  2.4320us         2  1.2160us  1.2160us  1.2160us  [CUDA memset]
+      API calls:   94.28%  209.48ms         4  52.370ms  237.48us  208.59ms  cudaMalloc
+                    4.01%  8.8990ms         4  2.2248ms  1.8849ms  2.6593ms  cudaMemcpy
+                    0.78%  1.7356ms         4  433.89us  222.38us  631.46us  cudaFree
+                    0.48%  1.0709ms         4  267.72us  121.83us  701.02us  cudaDeviceSynchronize
+                    0.23%  518.02us        96  5.3960us     246ns  205.14us  cuDeviceGetAttribute
+                    0.07%  155.35us         2  77.676us  40.543us  114.81us  cudaMemset
+                    0.07%  150.48us         1  150.48us  150.48us  150.48us  cuDeviceTotalMem
+                    0.05%  109.47us         2  54.734us  32.760us  76.708us  cudaLaunchKernel
+                    0.03%  64.246us         1  64.246us  64.246us  64.246us  cuDeviceGetName
+                    0.00%  6.5350us         1  6.5350us  6.5350us  6.5350us  cuDeviceGetPCIBusId
+                    0.00%  3.3580us         3  1.1190us     318ns  1.9620us  cuDeviceGetCount
+                    0.00%  2.3340us         2  1.1670us     360ns  1.9740us  cuDeviceGet
+                    0.00%  1.0560us         1  1.0560us  1.0560us  1.0560us  cudaPeekAtLastError
