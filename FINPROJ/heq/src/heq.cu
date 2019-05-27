@@ -55,7 +55,7 @@ __global__ void update_px(unsigned char *input_image,
 	int y = blockIdx.y*TILE_SIZE+threadIdx.y;
 	  
 	int location = 	y*(gridDim.x*TILE_SIZE)+x;
-    output_image = input_lut[input_image[location]];
+    //output_image = input_lut[input_image[location]];
 }
 
 __global__ void warmup(unsigned char *input, 
@@ -86,35 +86,35 @@ void gpu_function(unsigned char *data,
 	
 	int size = XSize*YSize;
 
-    //////////////////
-    // compute scaling factor alpha: 255 / (width * height) : do in sofware
-    /////////////////
-    float alpha = 255.0f / size;
-	
+    ///////
+    // sources
+    //      https://hackernoon.com/histogram-equalization-in-python-from-scratch-ebb9c8aa3f23
+    //////
+
     ////////////////////////
     // calculate histogram of image -> write a kernal for this:
     /////////////////////////
 
     // init hist
-    unsigned int hist[256];
+    unsigned int hist[256] = {0};
 
 	// Allocate arrays in GPU memory
     // input: image
-	checkCuda(cudaMalloc((void**)&input_image, size*sizeof(unsigned char)));
+	//checkCuda(cudaMalloc((void**)&input_image, size*sizeof(unsigned char)));
     // output / input: histogram(out) / lut(in)
-	checkCuda(cudaMalloc((void**)&output_hist_lut, 256*sizeof(unsigned int)));
+	//checkCuda(cudaMalloc((void**)&output_hist_lut, 256*sizeof(unsigned int)));
     // output: image
-	checkCuda(cudaMalloc((void**)&output_image, size*sizeof(unsigned char)));
+	//checkCuda(cudaMalloc((void**)&output_image, size*sizeof(unsigned char)));
 	
     // zero out histogram and image
-    checkCuda(cudaMemset(output_hist_lut, 0, 256*sizeof(unsigned int)));
-    checkCuda(cudaMemset(output_image, 0, size*sizeof(unsigned char)));
+    //checkCuda(cudaMemset(output_hist_lut, 0, 256*sizeof(unsigned int)));
+    //checkCuda(cudaMemset(output_image, 0, size*sizeof(unsigned char)));
 	
     // copy image to GPU
-    checkCuda(cudaMemcpy(input_image, 
-        data, 
-        size*sizeof(unsigned char), 
-        cudaMemcpyHostToDevice));
+    //checkCuda(cudaMemcpy(input_image, 
+    //    data, 
+    //    size*sizeof(unsigned char), 
+    //    cudaMemcpyHostToDevice));
 
 	checkCuda(cudaDeviceSynchronize());
 
@@ -131,37 +131,53 @@ void gpu_function(unsigned char *data,
 	#endif
         
         // calculate histogram on gpu
-        calc_hist<<<dimGrid, dimBlock>>>(input_image, output_hist_lut);
+        //calc_hist<<<dimGrid, dimBlock>>>(input_image, output_hist_lut);
+        for(int ii = 0; ii < size; ++ii) {
+            hist[data[ii]] += 1;
+        }
+        
 
         // retrieve hist from gpu
-        checkCuda(cudaMemcpy(hist, 
-                output_hist, 
-                256*sizeof(unsigned int), 
-                cudaMemcpyDeviceToHost));
+        //checkCuda(cudaMemcpy(hist, 
+        //        output_hist, 
+        //        256*sizeof(unsigned int), 
+        //        cudaMemcpyDeviceToHost));
 
         ///////////////
         // LUT is a prefix sum! -> bad target for parrallel (unless implement scan)
         // create LUT:
-        //      LUT[0] = alpha * histogram[0]
-        //      LUT[i] = LUT[i-1] + (alpha * histogram[i])
+        //      LUT[0] = histogram[0]
+        //      LUT[i] = LUT[i-1] + histogram[i]
+        //      normalize LUT to 0-255
+        //          - sub all by LUT[0], 
         //////////////
         unsigned int lut[256];
-        lut[0] = alpha * hist[0];
+        lut[0] = 0;
+
         for (int ii = 1; ii < 256; ++ii) {
-            lut[ii] = lut[ii-1] + (alpha * hist[0]);
+            lut[ii] = (lut[ii-1] + hist[ii]);
         }
+
+        for (int ii = 1; ii < 256; ++ii) {
+            lut[ii] = ((1.0f * lut[ii]) / lut[255]) * 255;
+        }
+
+        
         
         // write lut to gpu
-        checkCuda(cudaMemcpy(output_hist_lut, 
-                lut, 
-                256*sizeof(unsigned int), 
-                cudaMemcpyHostToDevice));
+        //checkCuda(cudaMemcpy(output_hist_lut, 
+        //        lut, 
+         //       256*sizeof(unsigned int), 
+          //      cudaMemcpyHostToDevice));
 
         ////////////
         // use LUT to compute new value -> write a kernal for this:
         // output[location] = lut[input[location]]
         ///////////
-        calc_hist<<<dimGrid, dimBlock>>>(input_image, output_hist_lut, output_image);
+        //calc_hist<<<dimGrid, dimBlock>>>(input_image, output_hist_lut, output_image);
+        for(int ii = 0; ii < size; ++ii) {
+            data[ii] = lut[data[ii]];
+        }
             
         // From here on, no need to change anything
         checkCuda(cudaPeekAtLastError());                                     
@@ -173,15 +189,15 @@ void gpu_function(unsigned char *data,
 	#endif
 
     // Retrieve results from the GPU
-    checkCuda(cudaMemcpy(data,
-                output_gpu, 
-                size*sizeof(unsigned char), 
-                cudaMemcpyDeviceToHost));
+    //checkCuda(cudaMemcpy(data,
+    //            output_gpu, 
+    //            size*sizeof(unsigned char), 
+    //            cudaMemcpyDeviceToHost));
         
     // Free resources and end the program
-	checkCuda(cudaFree(output_image));
-	checkCuda(cudaFree(output_hist_lut));
-	checkCuda(cudaFree(input_image));
+	//checkCuda(cudaFree(output_image));
+	//checkCuda(cudaFree(output_hist_lut));
+	//checkCuda(cudaFree(input_image));
 
 }
 
