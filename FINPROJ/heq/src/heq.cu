@@ -70,13 +70,43 @@ __global__ void warmup(unsigned char *input,
 
 }
 
+void calc_hist(unsigned char *data,
+               int size,
+               unsigned int *hist) {
+    for(int ii = 0; ii < size; ++ii) {
+        hist[data[ii]] += 1;
+    }
+}
 
+void calc_lut(unsigned int* lut,
+              unsigned int* hist) {
+    lut[0] = 0;
+    for (int ii = 1; ii < 256; ++ii) {
+        lut[ii] = (lut[ii-1] + hist[ii]);
+    }
+    for (int ii = 1; ii < 256; ++ii) {
+        lut[ii] = ((1.0f * lut[ii]) / lut[255]) * 255;
+    }
+}
+
+__global__ apply_lut(unsigned char* data,
+               int size, 
+               unsigned int* lut) {
+    for(int ii = 0; ii < size; ++ii) {
+        data[ii] = lut[data[ii]];
+    }
+}
+
+// questions:
+//why seperate buffers for input and output
+//multiple kernals vs helper functions?
 void gpu_function(unsigned char *data,  
                   unsigned int height, 
                   unsigned int width){
     
-    unsigned char *input_gpu;
-    unsigned char *output_gpu;
+    unsigned char *image_in;
+    unsigned char *image_out;
+    unsigned int  *hist_to_lut;
 
 	int gridXSize = 1 + (( width - 1) / TILE_SIZE);
 	int gridYSize = 1 + ((height - 1) / TILE_SIZE);
@@ -99,22 +129,21 @@ void gpu_function(unsigned char *data,
     unsigned int hist[256] = {0};
 
 	// Allocate arrays in GPU memory
-    // input: image
-	//checkCuda(cudaMalloc((void**)&input_image, size*sizeof(unsigned char)));
-    // output / input: histogram(out) / lut(in)
-	//checkCuda(cudaMalloc((void**)&output_hist_lut, 256*sizeof(unsigned int)));
-    // output: image
-	//checkCuda(cudaMalloc((void**)&output_image, size*sizeof(unsigned char)));
+    // image in 
+	checkCuda(cudaMalloc((void**)&image_in, size*sizeof(unsigned char)));
+    // image out
+	checkCuda(cudaMalloc((void**)&image_out, size*sizeof(unsigned char)));
+    // histogram(out) / lut(in)
+	checkCuda(cudaMalloc((void**)&hist_to_lut, 256*sizeof(unsigned int)));
 	
-    // zero out histogram and image
-    //checkCuda(cudaMemset(output_hist_lut, 0, 256*sizeof(unsigned int)));
-    //checkCuda(cudaMemset(output_image, 0, size*sizeof(unsigned char)));
+    // zero out histogram
+    checkCuda(cudaMemset(image_out, 0, size*sizeof(unsigned char)));
 	
     // copy image to GPU
-    //checkCuda(cudaMemcpy(input_image, 
-    //    data, 
-    //    size*sizeof(unsigned char), 
-    //    cudaMemcpyHostToDevice));
+    checkCuda(cudaMemcpy(image, 
+        data, 
+        size*sizeof(unsigned char), 
+        cudaMemcpyHostToDevice));
 
 	checkCuda(cudaDeviceSynchronize());
 
@@ -132,9 +161,7 @@ void gpu_function(unsigned char *data,
         
         // calculate histogram on gpu
         //calc_hist<<<dimGrid, dimBlock>>>(input_image, output_hist_lut);
-        for(int ii = 0; ii < size; ++ii) {
-            hist[data[ii]] += 1;
-        }
+        calc_hist(data, size, hist);
         
 
         // retrieve hist from gpu
@@ -152,17 +179,7 @@ void gpu_function(unsigned char *data,
         //          - sub all by LUT[0], 
         //////////////
         unsigned int lut[256];
-        lut[0] = 0;
-
-        for (int ii = 1; ii < 256; ++ii) {
-            lut[ii] = (lut[ii-1] + hist[ii]);
-        }
-
-        for (int ii = 1; ii < 256; ++ii) {
-            lut[ii] = ((1.0f * lut[ii]) / lut[255]) * 255;
-        }
-
-        
+        calc_lut(lut, hist);
         
         // write lut to gpu
         //checkCuda(cudaMemcpy(output_hist_lut, 
@@ -174,10 +191,8 @@ void gpu_function(unsigned char *data,
         // use LUT to compute new value -> write a kernal for this:
         // output[location] = lut[input[location]]
         ///////////
-        //calc_hist<<<dimGrid, dimBlock>>>(input_image, output_hist_lut, output_image);
-        for(int ii = 0; ii < size; ++ii) {
-            data[ii] = lut[data[ii]];
-        }
+        //apply_lut(data, size, lut);
+        apply_lut<<<dimGrid, dimBlock>>>(image_in, image_out, hist_to_lut);
             
         // From here on, no need to change anything
         checkCuda(cudaPeekAtLastError());                                     
@@ -189,15 +204,15 @@ void gpu_function(unsigned char *data,
 	#endif
 
     // Retrieve results from the GPU
-    //checkCuda(cudaMemcpy(data,
-    //            output_gpu, 
-    //            size*sizeof(unsigned char), 
-    //            cudaMemcpyDeviceToHost));
+    checkCuda(cudaMemcpy(data,
+                image_out, 
+                size*sizeof(unsigned char), 
+                cudaMemcpyDeviceToHost));
         
     // Free resources and end the program
-	//checkCuda(cudaFree(output_image));
-	//checkCuda(cudaFree(output_hist_lut));
-	//checkCuda(cudaFree(input_image));
+	checkCuda(cudaFree(image_in));
+	checkCuda(cudaFree(image_out));
+	checkCuda(cudaFree(hist_to_lut));
 
 }
 

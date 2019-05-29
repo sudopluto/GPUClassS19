@@ -1,60 +1,60 @@
 Image size: 1824x2736
 Padded image size: 1824x2736
-Kernel Execution Time: 31.712641 ms
-CPU execution time: 16.1124 ms
-GPU execution time: 34.5843 ms
+Kernel Execution Time: 34.955135 ms
+CPU execution time: 9.47372 ms
+GPU execution time: 37.8339 ms
 Percentage difference: 0 %
 Image size: 1824x2736
 Padded image size: 1824x2736
-Kernel Execution Time: 34.060352 ms
-CPU execution time: 18.4713 ms
-GPU execution time: 37.166 ms
+Kernel Execution Time: 35.428162 ms
+CPU execution time: 24.0966 ms
+GPU execution time: 37.659 ms
 Percentage difference: 0 %
 Image size: 1824x2736
 Padded image size: 1824x2736
-Kernel Execution Time: 31.613855 ms
-CPU execution time: 20.3374 ms
-GPU execution time: 34.4094 ms
+Kernel Execution Time: 34.679615 ms
+CPU execution time: 23.0185 ms
+GPU execution time: 36.8855 ms
 Percentage difference: 0 %
 Image size: 1824x2736
 Padded image size: 1824x2736
-Kernel Execution Time: 31.565920 ms
-CPU execution time: 57.4408 ms
-GPU execution time: 34.4494 ms
+Kernel Execution Time: 34.721024 ms
+CPU execution time: 13.7275 ms
+GPU execution time: 36.9246 ms
 Percentage difference: 0 %
 Image size: 1824x2736
 Padded image size: 1824x2736
-Kernel Execution Time: 31.524897 ms
-CPU execution time: 60.8712 ms
-GPU execution time: 33.6794 ms
+Kernel Execution Time: 34.561054 ms
+CPU execution time: 29.8455 ms
+GPU execution time: 37.3494 ms
 Percentage difference: 0 %
 Image size: 1824x2736
 Padded image size: 1824x2736
-Kernel Execution Time: 31.663679 ms
-CPU execution time: 32.0105 ms
-GPU execution time: 33.8497 ms
+Kernel Execution Time: 34.964001 ms
+CPU execution time: 72.7929 ms
+GPU execution time: 37.1761 ms
 Percentage difference: 0 %
 Image size: 1824x2736
 Padded image size: 1824x2736
-Kernel Execution Time: 31.920033 ms
-CPU execution time: 59.8981 ms
-GPU execution time: 34.0828 ms
+Kernel Execution Time: 34.629345 ms
+CPU execution time: 34.9135 ms
+GPU execution time: 37.408 ms
 Percentage difference: 0 %
 Image size: 1824x2736
 Padded image size: 1824x2736
-Kernel Execution Time: 31.847809 ms
-CPU execution time: 12.3307 ms
-GPU execution time: 34.1085 ms
+Kernel Execution Time: 37.464066 ms
+CPU execution time: 58.929 ms
+GPU execution time: 40.5422 ms
 Percentage difference: 0 %
 Image size: 1824x2736
 Padded image size: 1824x2736
-Kernel Execution Time: 31.558657 ms
-CPU execution time: 18.9271 ms
-GPU execution time: 33.7297 ms
+Kernel Execution Time: 34.546463 ms
+CPU execution time: 9.17606 ms
+GPU execution time: 36.7056 ms
 Percentage difference: 0 %
 Image size: 1824x2736
 Padded image size: 1824x2736
-Kernel Execution Time: 39.104191 ms
-CPU execution time: 69.6957 ms
-GPU execution time: 41.9686 ms
+Kernel Execution Time: 34.617889 ms
+CPU execution time: 13.5905 ms
+GPU execution time: 36.8084 ms
 Percentage difference: 0 %
