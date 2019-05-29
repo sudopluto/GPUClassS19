@@ -1,0 +1,9 @@
++ ./baseline 100 3000
+Setting up input arrays.
+	Setup Time: 4331.46 ms
+Running sequential job.
+	Sequential Job Time: 404.18 ms
+Running parallel job.
+	Parallel Job Time: 21458.49 ms
+	Kernel Exec. Time: 20467.87 ms
+Correct result. No errors were found.
