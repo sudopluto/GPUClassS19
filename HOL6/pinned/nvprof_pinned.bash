@@ -12,5 +12,5 @@
 cd /scratch/$USER/GPUClassS19/HOL6/pinned/
 
 set -o xtrace
-nvprof ./vadd_pinned 100000000 
+nvprof --print-gpu-trace ./vadd_pinned 100000000 
 

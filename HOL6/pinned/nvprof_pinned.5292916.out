@@ -1,0 +1,21 @@
++ nvprof --print-gpu-trace ./vadd_pinned 100000000
+==41198== NVPROF is profiling process 41198, command: ./vadd_pinned 100000000
+==41198== Initializing input arrays.
+Running sequential job.
+	Sequential Job Time: 200.60 ms
+Running parallel job.
+	Parallel Job Time: 400.71 ms
+Correct result. No errors were found.
+Profiling application: ./vadd_pinned 100000000
+==41198== Profiling result:
+   Start  Duration            Grid Size      Block Size     Regs*    SSMem*    DSMem*      Size  Throughput  SrcMemType  DstMemType           Device   Context    Stream  Name
+15.3247s  132.69ms                    -               -         -         -         -  762.94MB  5.6149GB/s      Pinned      Device   Tesla K20m (0)         1         7  [CUDA memcpy HtoD]
+15.4574s  132.64ms                    -               -         -         -         -  762.94MB  5.6173GB/s      Pinned      Device   Tesla K20m (0)         1         7  [CUDA memcpy HtoD]
+15.5902s  16.014ms         (195313 1 1)       (512 1 1)        10        0B        0B         -           -           -           -   Tesla K20m (0)         1         7  add(Data, int) [122]
+15.6062s  119.12ms                    -               -         -         -         -  762.94MB  6.2545GB/s      Device      Pinned   Tesla K20m (0)         1         7  [CUDA memcpy DtoH]
+
+Regs: Number of registers used per CUDA thread. This number includes registers used internally by the CUDA driver and/or tools and can be more than what the compiler shows.
+SSMem: Static shared memory allocated per CUDA block.
+DSMem: Dynamic shared memory allocated per CUDA block.
+SrcMemType: The type of source memory accessed by memory operation/copy
+DstMemType: The type of destination memory accessed by memory operation/copy
