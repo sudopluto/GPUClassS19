@@ -16,7 +16,7 @@ iterations=10
 cd /scratch/$USER/GPUClassS19/FINPROJ/heq/
 
 #image
-image="input/bridge.png"
+image="./in.jpg"
 
 echo "------------------------------"
 echo "Running tests..."

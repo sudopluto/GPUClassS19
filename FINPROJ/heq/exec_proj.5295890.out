@@ -1,0 +1,21 @@
+------------------------------
+Running tests...
+------------------------------
+------------------------------
+
+Running Trial 1
+Running Trial 2
+Running Trial 3
+Running Trial 4
+Running Trial 5
+Running Trial 6
+Running Trial 7
+Running Trial 8
+Running Trial 9
+Running Trial 10
+------------------------------
+Results
+    CPU Average: 63.8966
+    GPU Average: 20.7497
+    Ker Average: 6.97003
+    Dif Average: 0

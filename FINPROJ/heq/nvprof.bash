@@ -14,7 +14,9 @@ module load opencv/3.4.3-contrib
 cd /scratch/$USER/GPUClass19/FINPROJ/heq/
 
 set -o xtrace
-nvprof ./heq input/bridge.png
-echo "METRICS"
-nvprof -m all ./heq input/bridge.png
+nvprof ./heq ./in.jpg
+echo "-------------------------------"
+echo "----------METRICS--------------"
+echo "-------------------------------"
+nvprof -m all ./heq ./in.jpg
 
